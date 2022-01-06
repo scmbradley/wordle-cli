@@ -71,13 +71,13 @@ class Wordle:
                 print(self.unused_letters())
             elif x == "!help":
                 print(self.help_text)
-            elif len(x) == 5:
+            elif len(x) == self.size:
                 g = self.guess(x)
                 print(g)
                 ct = not g.winner()
             else:
                 print(
-                    "Please type a five letter word or a command.\nType !help to see commands."
+                    f"Please type a {self.size} letter word or a command.\nType !help to see commands."
                 )
 
     def unused_letters(self):
@@ -115,10 +115,9 @@ class GuessReport:
     def __repr__(self):
         line_one = " ".join([x[0] for x in self.report])
         line_two = " ".join(self.formatter(x[1]) for x in self.report)
-        return line_one + "\n" + line_two + "\n"
+        return line_one + "\n" + line_two
 
 
 if __name__ == "__main__":
     w = Wordle()
-    w.new_game()
     w.guess_interactive()
