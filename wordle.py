@@ -22,12 +22,21 @@ class Wordle:
                 full_word_list = [x.strip() for x in data.readlines()]
                 self.word_list = [x for x in full_word_list if len(x) == size]
                 maybe_file.write_text("\n".join(self.word_list))
-
+        _help_list = [
+            "!help: display this text.",
+            "!quit: quit the game.",
+            "!cheat: display the word.",
+            "!letters: display unused letters (from most common to least).",
+        ]
+        self.help_text = "\n".join(_help_list)
         self.new_game()
 
-    def new_game(self):
+    def new_game(self, word=None):
         self.report_list = []
-        self.current_word = random.choice(self.word_list).upper()
+        if word is None:
+            self.current_word = random.choice(self.word_list).upper()
+        else:
+            self.current_word = word
         print("OK, here we go.")
 
     def guess(self, w):
@@ -60,16 +69,22 @@ class Wordle:
                 self.cheat()
             elif x == "!letters":
                 print(self.unused_letters())
-            else:
+            elif x == "!help":
+                print(self.help_text)
+            elif len(x) == 5:
                 g = self.guess(x)
                 print(g)
                 ct = not g.winner()
+            else:
+                print(
+                    "Please type a five letter word or a command.\nType !help to see commands."
+                )
 
     def unused_letters(self):
         letters = set("QWERTYUIOPASDFGHJKLZXCVBNM")
         for r in self.report_list:
             letters = letters.difference(r.letters())
-        ret = sorted(list(letters), key=self.ordered_letter_list().index)
+        ret = ",".join(sorted(list(letters), key=self.ordered_letter_list().index))
         return ret
 
 
