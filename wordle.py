@@ -22,6 +22,7 @@ class Wordle:
                 full_word_list = [x.strip() for x in data.readlines()]
                 self.word_list = [x for x in full_word_list if len(x) == size]
                 maybe_file.write_text("\n".join(self.word_list))
+
         self.new_game()
 
     def new_game(self):
@@ -40,6 +41,11 @@ class Wordle:
     def formatter(self, x):
         d = {GuessStatus.WRONG: " ", GuessStatus.IN_POS: "X", GuessStatus.IN_WORD: "/"}
         return d[x]
+
+    def ordered_letter_list(self):
+        return "".join(
+            [x[0] for x in Counter("".join(self.word_list)).most_common()]
+        ).upper()
 
     def cheat(self):
         print(self.current_word)
@@ -63,7 +69,8 @@ class Wordle:
         letters = set("QWERTYUIOPASDFGHJKLZXCVBNM")
         for r in self.report_list:
             letters = letters.difference(r.letters())
-        return letters
+        ret = sorted(list(letters), key=self.ordered_letter_list().index)
+        return ret
 
 
 class GuessStatus(Enum):
