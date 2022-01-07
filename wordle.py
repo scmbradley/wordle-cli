@@ -2,7 +2,6 @@
 
 from collections import Counter
 from pathlib import Path
-import random
 from enum import Enum, auto
 from word_list import WordList
 
@@ -31,28 +30,23 @@ class Wordle:
         self.report_list = []
         self.solved = False
         if word is None:
-            self.current_word = random.choice(self.word_list.word_list)
+            self.current_word = self.word_list.pick_random()
         else:
             self.current_word = word
-        print("OK, here we go.")
+        print("New game.")
 
     def guess(self, w):
         word = w.upper()
         gr = GuessReport(self.current_word, word, self.formatter)
+        self.report_list.append(gr)
         if gr.winner():
             self.solved = True
-            print("Winner winner")
-        self.report_list.append(gr)
+            print(f"You guessed correctly in {len(self.report_list)} guesses.")
         return gr
 
     def formatter(self, x):
         d = {GuessStatus.WRONG: " ", GuessStatus.IN_POS: "X", GuessStatus.IN_WORD: "/"}
         return d[x]
-
-    def ordered_letter_list(self):
-        return "".join(
-            [x[0] for x in Counter("".join(self.word_list.word_list)).most_common()]
-        ).upper()
 
     def cheat(self):
         print(self.current_word)
@@ -86,6 +80,9 @@ class Wordle:
             sorted(list(letters), key=self.word_list.most_common_letters().index)
         )
         return ret
+
+    def show_stats(self):
+        self.word_list.print_stat_report(num=self.size)
 
 
 class GuessStatus(Enum):

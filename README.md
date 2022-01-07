@@ -24,12 +24,6 @@ D I G I T
 X X X X X
 ```
 
-You can just `chmod +X wordle.py` and then run `./wordle.py`,
-but currently that means only using the default options.
-You probably don't want to do this since the default uses an
-absolutely massive list of words, and thus you'll probably get a
-really obscure word like `OBELI` or `SEQED`.
-See `sample-game-run.py` for a way to run the game with options set.
 
 There is also a -- currently undocumented --
 set of crude tools for taking any text file and generating

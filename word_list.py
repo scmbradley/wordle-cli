@@ -1,6 +1,7 @@
 from collections import Counter
 from pathlib import Path
 import re
+import random
 
 
 class WordList:
@@ -44,6 +45,9 @@ class WordList:
         p = Path(self.filename)
         filename_out = Path(p.stem + "_" + str(n) + p.suffix)
         filename_out.write_text("\n".join(self.n_letter_words(n)))
+
+    def pick_random(self):
+        return random.choice(self.word_list)
 
     def position_stats(self, num=None, top_n=10):
         pos_stats = dict()
