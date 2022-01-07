@@ -13,13 +13,11 @@ class Wordle:
         bwl = Path(base_word_list)
         maybe_file = Path(bwl.stem + "_" + str(size) + bwl.suffix)
         if maybe_file.is_file():
-            with maybe_file.open() as data:
-                self.word_list = [x.strip() for x in data.readlines()]
+            self.word_list = WordList(maybe_file)
         else:
-            with bwl.open() as data:
-                full_word_list = [x.strip() for x in data.readlines()]
-                self.word_list = [x for x in full_word_list if len(x) == size]
-                maybe_file.write_text("\n".join(self.word_list))
+            big_list = WordList(bwl)
+            big_list.write_n_letter_list(size)
+            self.word_list = WordList(maybe_file)
         _help_list = [
             "!help: display this text.",
             "!quit: quit the game.",
@@ -33,7 +31,7 @@ class Wordle:
         self.report_list = []
         self.solved = False
         if word is None:
-            self.current_word = random.choice(self.word_list).upper()
+            self.current_word = random.choice(self.word_list.word_list)
         else:
             self.current_word = word
         print("OK, here we go.")
@@ -53,7 +51,7 @@ class Wordle:
 
     def ordered_letter_list(self):
         return "".join(
-            [x[0] for x in Counter("".join(self.word_list)).most_common()]
+            [x[0] for x in Counter("".join(self.word_list.word_list)).most_common()]
         ).upper()
 
     def cheat(self):
@@ -84,7 +82,9 @@ class Wordle:
         letters = set("QWERTYUIOPASDFGHJKLZXCVBNM")
         for r in self.report_list:
             letters = letters.difference(r.letters())
-        ret = ",".join(sorted(list(letters), key=self.ordered_letter_list().index))
+        ret = ",".join(
+            sorted(list(letters), key=self.word_list.most_common_letters().index)
+        )
         return ret
 
 
@@ -116,8 +116,3 @@ class GuessReport:
         line_one = " ".join([x[0] for x in self.report])
         line_two = " ".join(self.formatter(x[1]) for x in self.report)
         return line_one + "\n" + line_two
-
-
-if __name__ == "__main__":
-    w = Wordle()
-    w.guess_interactive()

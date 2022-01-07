@@ -25,6 +25,7 @@ class WordList:
     def __init__(self, filename):
         with open(filename) as data:
             self.word_list = [x.strip() for x in data.readlines()]
+        self.filename = filename
 
     @staticmethod
     def is_contraction(word):
@@ -33,8 +34,16 @@ class WordList:
     def top_letters(self, ctr, top_n=10):
         return [x[0].upper() for x in ctr.most_common(top_n)]
 
+    def most_common_letters(self):
+        return self.position_stats(top_n=26)["total"]
+
     def n_letter_words(self, n):
         return [x for x in self.word_list if len(x) == n]
+
+    def write_n_letter_list(self, n):
+        p = Path(self.filename)
+        filename_out = Path(p.stem + "_" + str(n) + p.suffix)
+        filename_out.write_text("\n".join(self.n_letter_words(n)))
 
     def position_stats(self, num=None, top_n=10):
         pos_stats = dict()
