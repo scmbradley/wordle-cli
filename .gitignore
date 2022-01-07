@@ -2,3 +2,5 @@
 /__pycache__/
 /test.txt
 /.hypothesis/
+*_5.txt
+*_6.txt
