@@ -4,9 +4,10 @@ from collections import Counter
 from pathlib import Path
 import random
 from enum import Enum, auto
+from word_list import WordList
 
-with open("wordlist.txt") as d:
-    word_list = [x.strip() for x in d.readlines()]
+# with open("wordlist.txt") as d:
+#     word_list = [x.strip() for x in d.readlines()]
 
 
 class Wordle:
