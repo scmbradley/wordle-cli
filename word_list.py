@@ -32,6 +32,9 @@ class WordList:
     def is_contraction(word):
         return "'" in word[1:-1] or "’" in word[1:-1]
 
+    def contains(self, word):
+        return word in self.word_list
+
     def top_letters(self, ctr, top_n=10):
         return [x[0].upper() for x in ctr.most_common(top_n)]
 

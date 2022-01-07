@@ -7,8 +7,9 @@ from word_list import WordList
 
 
 class Wordle:
-    def __init__(self, size=5, base_word_list="wordlist.txt"):
+    def __init__(self, size=5, base_word_list="wordlist.txt", only_words=True):
         self.size = size
+        self.only_words = only_words
         bwl = Path(base_word_list)
         maybe_file = Path(bwl.stem + "_" + str(size) + bwl.suffix)
         if maybe_file.is_file():
@@ -37,6 +38,9 @@ class Wordle:
 
     def guess(self, w):
         word = w.upper()
+        if self.only_words and not self.word_list.contains(word):
+            print(f"{word} is not a word.")
+            return InvalidGuessReport()
         gr = GuessReport(self.current_word, word, self.formatter)
         self.report_list.append(gr)
         if gr.winner():
@@ -113,3 +117,14 @@ class GuessReport:
         line_one = " ".join([x[0] for x in self.report])
         line_two = " ".join(self.formatter(x[1]) for x in self.report)
         return line_one + "\n" + line_two
+
+
+class InvalidGuessReport(GuessReport):
+    def __init__(self):
+        pass
+
+    def __repr__(self):
+        return ""
+
+    def winner(self):
+        return False
