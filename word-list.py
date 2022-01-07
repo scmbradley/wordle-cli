@@ -14,9 +14,7 @@ class WordList:
                     for x in line.strip().upper().split()
                     if not self.is_contraction(x)
                 ]
-                words = self.strip_punctuation.sub("", line).strip().upper().split()
-                words = [x for x in words if "'" not in x]
-                word_counter.update(words)
+                word_counter.update([self.strip_punctuation.sub("", x) for x in words])
         self.word_counter = word_counter
         self.word_list = [x[0] for x in word_counter.most_common(max_words)]
 
