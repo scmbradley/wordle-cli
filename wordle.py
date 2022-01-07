@@ -33,6 +33,7 @@ class Wordle:
 
     def new_game(self, word=None):
         self.report_list = []
+        self.solved = False
         if word is None:
             self.current_word = random.choice(self.word_list).upper()
         else:
@@ -43,6 +44,7 @@ class Wordle:
         word = w.upper()
         gr = GuessReport(self.current_word, word, self.formatter)
         if gr.winner():
+            self.solved = True
             print("Winner winner")
         self.report_list.append(gr)
         return gr
