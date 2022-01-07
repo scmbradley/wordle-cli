@@ -6,9 +6,6 @@ import random
 from enum import Enum, auto
 from word_list import WordList
 
-# with open("wordlist.txt") as d:
-#     word_list = [x.strip() for x in d.readlines()]
-
 
 class Wordle:
     def __init__(self, size=5, base_word_list="wordlist.txt"):

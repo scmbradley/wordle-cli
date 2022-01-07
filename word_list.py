@@ -4,26 +4,30 @@ import re
 
 
 class WordList:
-    def __init__(self, filename_in, max_words=10_000):
+    @staticmethod
+    def generate(filename_in, filename_out, max_words=10_000):
         word_counter = Counter()
-        self.strip_punctuation = re.compile(r"(\W|_)")
+        strip_punctuation = re.compile(r"(\W|_)")
         with Path(filename_in).open() as data:
             for line in data:
                 words = [
                     x
                     for x in line.strip().upper().split()
-                    if not self.is_contraction(x)
+                    if not WordList.is_contraction(x)
                 ]
-                word_counter.update([self.strip_punctuation.sub("", x) for x in words])
-        self.word_counter = word_counter
-        self.word_list = [x[0] for x in word_counter.most_common(max_words)]
-
-    def write_out(self, filename_out):
+                word_counter.update([strip_punctuation.sub("", x) for x in words])
+        word_list = [x[0] for x in word_counter.most_common(max_words)]
         file_out = Path(filename_out)
-        file_out.write_text("\n".join(self.word_list))
+        file_out.write_text("\n".join(word_list))
         print(f"Wrote out to file {filename_out}")
+        return WordList(filename_out)
 
-    def is_contraction(self, word):
+    def __init__(self, filename):
+        with open(filename) as data:
+            self.word_list = [x.strip() for x in data.readlines()]
+
+    @staticmethod
+    def is_contraction(word):
         return "'" in word[1:-1] or "’" in word[1:-1]
 
     def top_letters(self, ctr, top_n=10):
