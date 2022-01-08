@@ -113,6 +113,9 @@ class GuessReport:
     def letters(self):
         return set([x[0] for x in self.report])
 
+    def correct_letters(self):
+        return set([x[0] for x in self.report if x[1] != GuessStatus.WRONG])
+
     def __repr__(self):
         line_one = " ".join([x[0] for x in self.report])
         line_two = " ".join(self.formatter(x[1]) for x in self.report)
