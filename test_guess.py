@@ -42,10 +42,10 @@ class TestGuessFormatter:
 class TestSolverBasics:
     def test_parse_report(self, solver_cares, guess_cares_clear):
         solver_cares.parse_report(guess_cares_clear)
-        assert solver_cares.info_dict["C"] == set([0])
+        assert solver_cares.in_pos_letters[0] == "C"
         assert solver_cares.letters_in_word == set(["C", "R", "E", "A"])
-        assert solver_cares.info_dict["R"] == set([0, 1, 2, 3])
-        assert solver_cares.info_dict["Z"] == set([0, 1, 2, 3, 4])
+        assert solver_cares.possibilities_dict["R"] == set([0, 1, 2, 3])
+        assert solver_cares.possibilities_dict["Z"] == set([0, 1, 2, 3, 4])
 
 
 class TestSolverWordPicker:
@@ -69,5 +69,19 @@ class TestValidateWord:
 
 class TestSolverSolve:
     def test_solver_solves(self, solver_cares):
+        solver_cares.solve()
+        assert solver_cares.wordle.solved
+
+    def test_solver_handles_double_letter(self):
+        w = Wordle()
+        w.new_game(word="LOOPY")
+        s = WordleSolver(w)
+        s.solve()
+        assert s.wordle.solved
+
+    def test_solver_resets(self, solver_cares):
+        solver_cares.solve()
+        solver_cares.new_game()
+        assert solver_cares.wordle.solved is False
         solver_cares.solve()
         assert solver_cares.wordle.solved
