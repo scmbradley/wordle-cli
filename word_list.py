@@ -52,7 +52,7 @@ class WordList:
     def pick_random(self):
         return random.choice(self.word_list)
 
-    def position_stats(self, num=None, top_n=10):
+    def position_stats(self, num=None, top_n=26):
         pos_stats = dict()
         words_to_count = []
         if num is not None:

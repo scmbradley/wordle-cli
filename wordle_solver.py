@@ -1,4 +1,5 @@
 from wordle import Wordle, GuessStatus
+from itertool import product
 
 
 class WordleSolver:
@@ -6,6 +7,7 @@ class WordleSolver:
         self.wordle = wordle
         if word_list is None:
             self.word_list = wordle.word_list
+        self.stat_dict = self.word_list.position_stats(num=wordle.size)
         self.reset_for_new_game()
 
     def reset_for_new_game(self):
@@ -27,6 +29,10 @@ class WordleSolver:
                 self.info_dict[letter].difference_update(set([pos]))
             elif status == GuessStatus.IN_POS:
                 self.info_dict[letter] = set([pos])
+
+    def pick_word(self):
+        """Brute force iteration over"""
+        pass
 
     def print_info(self):
         if self.letters_in_word != []:
