@@ -1,5 +1,5 @@
 from wordle import Wordle, GuessStatus
-from itertool import product
+from itertools import product
 
 
 class WordleSolver:
@@ -9,6 +9,9 @@ class WordleSolver:
             self.word_list = wordle.word_list
         self.stat_dict = self.word_list.position_stats(num=wordle.size)
         self.reset_for_new_game()
+        self.letter_iterator = sorted(
+            product(range(26), repeat=self.wordle.size), key=sum
+        )
 
     def reset_for_new_game(self):
         self.info_dict = dict()
@@ -16,9 +19,14 @@ class WordleSolver:
             self.info_dict[letter] = set(range(self.wordle.size))
         self.letters_in_word = set()
 
+    def guess(self, word):
+        r = self.wordle.guess(word)
+        self.parse_report(r)
+
     def solve(self):
         while self.wordle.solved is False:
-            pass
+            word = self.pick_word()
+            self.guess(word)
 
     def parse_report(self, report):
         self.letters_in_word.update(report.correct_letters())
@@ -31,8 +39,24 @@ class WordleSolver:
                 self.info_dict[letter] = set([pos])
 
     def pick_word(self):
-        """Brute force iteration over"""
-        pass
+        for i_list in self.letter_iterator:
+            if self.validate_word(self.index_list_to_word(i_list)):
+                return self.index_list_to_word(i_list)
+        return False
+
+    def index_list_to_word(self, i_list):
+        word = []
+        for i in range(self.wordle.size):
+            word.append(self.stat_dict[i][i_list[i]])
+        return "".join(word)
+
+    def validate_word(self, word):
+        for x in self.letters_in_word:
+            if x not in word:
+                return False
+            if word.index(x) not in self.info_dict[x]:
+                return False
+        return word in self.word_list.word_list
 
     def print_info(self):
         if self.letters_in_word != []:

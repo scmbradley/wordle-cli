@@ -46,3 +46,28 @@ class TestSolverBasics:
         assert solver_cares.letters_in_word == set(["C", "R", "E", "A"])
         assert solver_cares.info_dict["R"] == set([0, 1, 2, 3])
         assert solver_cares.info_dict["Z"] == set([0, 1, 2, 3, 4])
+
+
+class TestSolverWordPicker:
+    def test_index_list_to_word(self, solver_cares):
+        assert solver_cares.index_list_to_word([0, 0, 0, 0, 0]) == "SARES"
+        assert solver_cares.index_list_to_word([1, 1, 1, 1, 1]) == "COAAE"
+        assert solver_cares.pick_word() == "SAREE"
+
+
+class TestValidateWord:
+    def test_validate_initial(self, solver_cares):
+        assert solver_cares.validate_word("CARES")
+        assert not solver_cares.validate_word("BZZZZ")
+
+    def test_validate_after_guess(self, solver_cares, wordle_cares):
+        g = wordle_cares.guess("TUFTS")
+        solver_cares.parse_report(g)
+        assert solver_cares.validate_word("CARES")
+        assert not solver_cares.validate_word("BZZZZ")
+
+
+class TestSolverSolve:
+    def test_solver_solves(self, solver_cares):
+        solver_cares.solve()
+        assert solver_cares.wordle.solved
