@@ -1,14 +1,17 @@
-from wordle import GuessStatus
+from wordle import Wordle, GuessStatus
 
 
 class WordleSolver:
-    def __init__(self, wordle, wl_obj=None):
-        self.wordle = wordle
+    def __init__(self, wordle=None, wl_obj=None):
+        if wordle is None:
+            self.wordle = Wordle()
+        else:
+            self.wordle = wordle
         if wl_obj is None:
-            self.wl_obj = wordle.word_list
-        self.stat_dict = self.wl_obj.position_stats(num=wordle.size)
+            self.wl_obj = self.wordle.word_list
+        self.stat_dict = self.wl_obj.position_stats(num=self.wordle.size)
+        self.words_score_order = sorted(self.wl_obj.word_list, key=self.score_word)
         self.reset_for_new_game()
-        self.remaining_words = sorted(self.wl_obj.word_list, key=self.score_word)
 
     def reset_for_new_game(self):
         self.possibilities_dict = dict()
@@ -16,6 +19,7 @@ class WordleSolver:
             self.possibilities_dict[letter] = set(range(self.wordle.size))
         self.letters_in_word = set()
         self.in_pos_letters = dict()
+        self.remaining_words = self.words_score_order.copy()
 
     def new_game(self, **kwargs):
         self.reset_for_new_game()
@@ -96,3 +100,11 @@ class WordleSolver:
                 print(",".join(self.possibilities_dict[letter]))
         else:
             print("No information")
+
+    def multiguesser(self, num_guesses):
+        results = []
+        for i in range(num_guesses):
+            self.new_game()
+            self.solve()
+            results.append((self.wordle.num_guesses(), self.wordle.current_word))
+        return results

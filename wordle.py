@@ -88,6 +88,12 @@ class Wordle:
     def show_stats(self):
         self.word_list.print_stat_report(num=self.size)
 
+    def guessed_words(self):
+        return [x.guess for x in self.report_list]
+
+    def num_guesses(self):
+        return len(self.report_list)
+
 
 class GuessStatus(Enum):
     WRONG = auto()
@@ -99,6 +105,7 @@ class GuessReport:
     def __init__(self, word, guess, formatter):
         self.report = []
         self.formatter = formatter
+        self.guess = guess
         for i, x in enumerate(guess):
             if x == word[i]:
                 self.report.append((x, GuessStatus.IN_POS))
