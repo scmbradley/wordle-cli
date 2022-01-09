@@ -52,6 +52,12 @@ class WordleSolver:
         print(f"Failed to find word: {self.wordle.current_word}")
         return False
 
+    def score_word(self, word):
+        score = 0
+        for pos, letter in enumerate(word):
+            score += self.stat_dict[pos].index(letter)
+        return score
+
     def index_list_to_word(self, i_list):
         word = []
         for i in range(self.wordle.size):
@@ -68,7 +74,7 @@ class WordleSolver:
         for i, x in enumerate(word):
             if i not in self.possibilities_dict[x]:
                 return False
-        return word in self.word_list.word_list
+        return self.word_list.contains(word)
 
     def print_info(self):
         if self.letters_in_word != []:

@@ -23,9 +23,11 @@ class WordList:
         print(f"Wrote out to file {filename_out}")
         return WordList(filename_out)
 
-    def __init__(self, filename):
+    def __init__(self, filename, alphabetise=False):
         with open(filename) as data:
             self.word_list = [x.strip() for x in data.readlines()]
+        if alphabetise:
+            self.word_list.sort()
         self.filename = filename
 
     @staticmethod
@@ -34,6 +36,9 @@ class WordList:
 
     def contains(self, word):
         return word in self.word_list
+
+    def wl_alpha(self):
+        return sorted(self.word_list)
 
     def top_letters(self, ctr, top_n=10):
         return [x[0].upper() for x in ctr.most_common(top_n)]

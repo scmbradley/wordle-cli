@@ -48,6 +48,11 @@ class TestSolverBasics:
         assert solver_cares.possibilities_dict["Z"] == set([0, 1, 2, 3, 4])
 
 
+class TestSolverScoreWord:
+    def test_solver_score_cares(self, solver_cares):
+        assert solver_cares.score_word("CARES") == 1
+
+
 class TestSolverWordPicker:
     def test_index_list_to_word(self, solver_cares):
         assert solver_cares.index_list_to_word([0, 0, 0, 0, 0]) == "SARES"
