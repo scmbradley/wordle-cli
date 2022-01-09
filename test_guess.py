@@ -57,7 +57,7 @@ class TestSolverWordPicker:
     def test_index_list_to_word(self, solver_cares):
         assert solver_cares.index_list_to_word([0, 0, 0, 0, 0]) == "SARES"
         assert solver_cares.index_list_to_word([1, 1, 1, 1, 1]) == "COAAE"
-        assert solver_cares.pick_word() == "CARES"
+        assert solver_cares.pick_word() in ["SORES", "CARES", "SAREE"]
 
 
 class TestValidateWord:
@@ -69,6 +69,7 @@ class TestValidateWord:
         g = wordle_cares.guess("TUFTS")
         solver_cares.parse_report(g)
         assert solver_cares.validate_word("CARES")
+        assert not solver_cares.validate_word("TUFTS")
         assert not solver_cares.validate_word("BZZZZ")
 
 

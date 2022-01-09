@@ -25,9 +25,11 @@ class WordList:
 
     def __init__(self, filename, alphabetise=False):
         with open(filename) as data:
-            self.word_list = [x.strip() for x in data.readlines()]
+            word_list = [x.strip() for x in data.readlines()]
         if alphabetise:
-            self.word_list.sort()
+            self.word_list = sorted(word_list)
+        else:
+            self.word_list = set(word_list)
         self.filename = filename
 
     @staticmethod
@@ -55,7 +57,7 @@ class WordList:
         filename_out.write_text("\n".join(self.n_letter_words(n)))
 
     def pick_random(self):
-        return random.choice(self.word_list)
+        return random.choice(tuple(self.word_list))
 
     def position_stats(self, num=None, top_n=26):
         pos_stats = dict()

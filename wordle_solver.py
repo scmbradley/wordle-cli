@@ -1,5 +1,4 @@
-from wordle import Wordle, GuessStatus
-from itertools import product
+from wordle import GuessStatus
 
 
 class WordleSolver:
@@ -56,6 +55,21 @@ class WordleSolver:
         for pos, letter in enumerate(word):
             score += self.stat_dict[pos].index(letter)
         return score
+
+    def exclusive_words(self, wl=[], remainder=None):
+        if remainder is None:
+            remainder = self.remaining_words.copy()
+        if len(remainder) > 0:
+            for word in remainder:
+                if len(set(word)) == len(word):
+                    new_remainder = list(
+                        filter(
+                            lambda x: set(x).intersection(set(word)) == set(), remainder
+                        )
+                    )
+                    return self.exclusive_words(wl + [word], new_remainder)
+        else:
+            return wl
 
     def index_list_to_word(self, i_list):
         word = []
