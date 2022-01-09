@@ -4,7 +4,7 @@ from wordle import Wordle, GuessStatus
 class WordleSolver:
     def __init__(self, wordle=None, wl_obj=None):
         if wordle is None:
-            self.wordle = Wordle()
+            self.wordle = Wordle(verbose=False)
         else:
             self.wordle = wordle
         if wl_obj is None:
@@ -29,7 +29,11 @@ class WordleSolver:
         r = self.wordle.guess(word)
         self.parse_report(r)
 
-    def solve(self):
+    def solve(self, first_guesses=[]):
+        for guess in first_guesses:
+            self.guess(guess)
+            if self.wordle.solved:
+                return True
         while self.wordle.solved is False:
             word = self.pick_word()
             self.guess(word)
@@ -38,7 +42,6 @@ class WordleSolver:
         self.letters_in_word.update(report.correct_letters())
         for pos, letter_report in enumerate(report.report):
             letter, status = letter_report
-            print(f"letter {letter}, status {status}")
             if status is GuessStatus.WRONG:
                 self.possibilities_dict[letter] = set()
             elif status is GuessStatus.IN_WORD:
@@ -101,10 +104,15 @@ class WordleSolver:
         else:
             print("No information")
 
-    def multiguesser(self, num_guesses):
+    def multisolver(self, num_games=10, firsts=[]):
         results = []
-        for i in range(num_guesses):
+        for i in range(num_games):
             self.new_game()
-            self.solve()
+            self.solve(first_guesses=firsts)
             results.append((self.wordle.num_guesses(), self.wordle.current_word))
         return results
+
+    def multisolver_stats(self, num_games=10, firsts=[]):
+        output = self.multisolver(num_games=num_games, firsts=firsts)
+        values = [x[0] for x in output]
+        print(f"min: {min(values)}, max: {max(values)}, avg: {sum(values)/len(values)}")

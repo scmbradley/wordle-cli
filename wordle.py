@@ -7,9 +7,15 @@ from word_list import WordList
 
 
 class Wordle:
-    def __init__(self, size=5, base_word_list="wordlist.txt", only_words=True):
+    def __init__(
+        self, size=5, base_word_list="wordlist.txt", only_words=True, verbose=True
+    ):
         self.size = size
         self.only_words = only_words
+        if verbose:
+            self.print = print
+        else:
+            self.print = lambda x: None
         bwl = Path(base_word_list)
         maybe_file = Path(bwl.stem + "_" + str(size) + bwl.suffix)
         if maybe_file.is_file():
@@ -34,18 +40,18 @@ class Wordle:
             self.current_word = self.word_list.pick_random()
         else:
             self.current_word = word
-        print("New game.")
+        self.print("New game.")
 
     def guess(self, w):
         word = w.upper()
         if self.only_words and not self.word_list.contains(word):
-            print(f"{word} is not a word.")
+            self.print(f"{word} is not a word.")
             return InvalidGuessReport()
         gr = GuessReport(self.current_word, word, self.formatter)
         self.report_list.append(gr)
         if gr.winner():
             self.solved = True
-            print(f"You guessed correctly in {len(self.report_list)} guesses.")
+            self.print(f"You guessed correctly in {len(self.report_list)} guesses.")
         return gr
 
     def formatter(self, x):
@@ -53,7 +59,7 @@ class Wordle:
         return d[x]
 
     def cheat(self):
-        print(self.current_word)
+        self.print(self.current_word)
 
     def guess_interactive(self):
         ct = True
@@ -64,15 +70,15 @@ class Wordle:
             elif x == "!cheat":
                 self.cheat()
             elif x == "!letters":
-                print(self.unused_letters())
+                self.print(self.unused_letters())
             elif x == "!help":
-                print(self.help_text)
+                self.print(self.help_text)
             elif len(x) == self.size:
                 g = self.guess(x)
-                print(g)
+                self.print(g)
                 ct = not g.winner()
             else:
-                print(
+                self.print(
                     f"Please type a {self.size} letter word or a command.\nType !help to see commands."
                 )
 
