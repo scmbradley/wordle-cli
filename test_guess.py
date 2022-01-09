@@ -57,7 +57,7 @@ class TestSolverWordPicker:
     def test_index_list_to_word(self, solver_cares):
         assert solver_cares.index_list_to_word([0, 0, 0, 0, 0]) == "SARES"
         assert solver_cares.index_list_to_word([1, 1, 1, 1, 1]) == "COAAE"
-        assert solver_cares.pick_word() == "SAREE"
+        assert solver_cares.pick_word() == "CARES"
 
 
 class TestValidateWord:

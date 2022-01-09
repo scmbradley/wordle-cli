@@ -3,15 +3,13 @@ from itertools import product
 
 
 class WordleSolver:
-    def __init__(self, wordle, word_list=None):
+    def __init__(self, wordle, wl_obj=None):
         self.wordle = wordle
-        if word_list is None:
-            self.word_list = wordle.word_list
-        self.stat_dict = self.word_list.position_stats(num=wordle.size)
+        if wl_obj is None:
+            self.wl_obj = wordle.word_list
+        self.stat_dict = self.wl_obj.position_stats(num=wordle.size)
         self.reset_for_new_game()
-        self.letter_iterator = sorted(
-            product(range(26), repeat=self.wordle.size), key=sum
-        )
+        self.remaining_words = sorted(self.wl_obj.word_list, key=self.score_word)
 
     def reset_for_new_game(self):
         self.possibilities_dict = dict()
@@ -46,9 +44,10 @@ class WordleSolver:
                 self.in_pos_letters[pos] = letter
 
     def pick_word(self):
-        for i_list in self.letter_iterator:
-            if self.validate_word(self.index_list_to_word(i_list)):
-                return self.index_list_to_word(i_list)
+        while len(self.remaining_words) > 0:
+            word = self.remaining_words.pop(0)
+            if self.validate_word(word):
+                return word
         print(f"Failed to find word: {self.wordle.current_word}")
         return False
 
@@ -74,7 +73,7 @@ class WordleSolver:
         for i, x in enumerate(word):
             if i not in self.possibilities_dict[x]:
                 return False
-        return self.word_list.contains(word)
+        return self.wl_obj.contains(word)
 
     def print_info(self):
         if self.letters_in_word != []:
