@@ -8,7 +8,7 @@ class WordList:
     @staticmethod
     def generate(filename_in, filename_out, max_words=10_000):
         word_counter = Counter()
-        strip_punctuation = re.compile(r"(\W|_)")
+        strip_punctuation = re.compile(r"(\W|_|\d)")
         with Path(filename_in).open() as data:
             for line in data:
                 words = [

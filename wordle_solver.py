@@ -56,12 +56,12 @@ class WordleSolver:
             score += self.stat_dict[pos].index(letter)
         return score
 
-    def exclusive_words(self, wl=[], remainder=None):
+    def exclusive_words(self, wl=[], remainder=None, no_doubles=True):
         if remainder is None:
             remainder = self.remaining_words.copy()
         if len(remainder) > 0:
             for word in remainder:
-                if len(set(word)) == len(word):
+                if not no_doubles or len(set(word)) == len(word):
                     new_remainder = list(
                         filter(
                             lambda x: set(x).intersection(set(word)) == set(), remainder
