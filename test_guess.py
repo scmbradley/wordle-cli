@@ -91,3 +91,7 @@ class TestSolverSolve:
         assert solver_cares.wordle.solved is False
         solver_cares.solve()
         assert solver_cares.wordle.solved
+
+    def test_multisolver(self, solver_cares):
+        solves = solver_cares.multisolver(num_games=100)
+        assert len(solves) == 100
