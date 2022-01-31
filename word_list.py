@@ -8,8 +8,26 @@ import wikipedia
 class WordList:
     @staticmethod
     def generate(filename_in, filename_out, max_words=10_000, word_length=None):
+        word_counter = WordList.count_words_in_file(filename_in)
+        word_list = WordList.cut_wordlist_down(word_counter, max_words, word_length)
+        WordList.write_out_wordlist(word_list, filename_out)
+        return WordList(filename_out)
+
+    @staticmethod
+    def generate_multiple(
+        filenames_in, filename_out, max_words=10_000, word_length=None
+    ):
         word_counter = Counter()
+        for filename in filenames_in:
+            word_counter.update(WordList.count_words_in_file(filename))
+        word_list = WordList.cut_wordlist_down(word_counter, max_words, word_length)
+        WordList.write_out_wordlist(word_list, filename_out)
+        return WordList(filename_out)
+
+    @staticmethod
+    def count_words_in_file(filename_in):
         strip_punctuation = re.compile(r"(\W|_|\d)")
+        word_counter = Counter()
         with Path(filename_in).open() as data:
             for line in data:
                 words = [
@@ -17,7 +35,13 @@ class WordList:
                     for x in line.strip().upper().split()
                     if not WordList.is_contraction(x)
                 ]
-                word_counter.update([strip_punctuation.sub("", x) for x in words])
+                word_counter.update(
+                    [strip_punctuation.sub("", x) for x in words if x.isascii()]
+                )
+        return word_counter
+
+    @staticmethod
+    def cut_wordlist_down(word_counter, max_words=10_000, word_length=None):
         if word_length is None:
             word_list = [x[0] for x in word_counter.most_common(max_words)]
         else:
@@ -28,10 +52,13 @@ class WordList:
                 word_list = n_word_list
             else:
                 word_list = n_word_list[:max_words]
+        return word_list
+
+    @staticmethod
+    def write_out_wordlist(word_list, filename_out):
         file_out = Path(filename_out)
         file_out.write_text("\n".join(word_list))
         print(f"Wrote out to file {filename_out}")
-        return WordList(filename_out)
 
     @staticmethod
     def wiki_corpus(
@@ -40,10 +67,16 @@ class WordList:
         if filename_raw is None:
             _filename = Path("wiki_tmp.txt")
         else:
-            _filename = Path(filename_out)
-        wiki_page_list = wikipedia.random(pages=num_pages)
+            _filename = Path(filename_raw)
+        wiki_page_list = []
+        n = num_pages
+        while n > 500:
+            wiki_page_list += wikipedia.random(pages=500)
+            n -= 500
+        wiki_page_list += wikipedia.random(pages=n)
         wiki_contents = ""
         pages_done = 0
+        page_errors = 0
         for page in wiki_page_list:
             try:
                 wiki_contents += wikipedia.page(page, auto_suggest=False).content
@@ -53,11 +86,12 @@ class WordList:
                         err.options[0], auto_suggest=False
                     ).content
                 except:
-                    pages_done -= 1
+                    page_errors += 1
                     print("Uncaught error. Sad face.")
             pages_done += 1
             if pages_done % 5 == 0:
                 print(f"Pages done: {pages_done}")
+        print(f"Pages retrieved with {page_errors} errors")
         _filename.write_text(wiki_contents)
         wl = WordList.generate(_filename, filename_out, **kwargs)
         if filename_raw is None:

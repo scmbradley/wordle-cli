@@ -78,12 +78,6 @@ class WordleSolver:
         else:
             return wl
 
-    def index_list_to_word(self, i_list):
-        word = []
-        for i in range(self.wordle.size):
-            word.append(self.stat_dict[i][i_list[i]])
-        return "".join(word)
-
     def validate_word(self, word):
         for x in self.letters_in_word:
             if x not in word:

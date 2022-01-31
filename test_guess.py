@@ -53,13 +53,6 @@ class TestSolverScoreWord:
         assert solver_cares.score_word("CARES") == 1
 
 
-class TestSolverWordPicker:
-    def test_index_list_to_word(self, solver_cares):
-        assert solver_cares.index_list_to_word([0, 0, 0, 0, 0]) == "SARES"
-        assert solver_cares.index_list_to_word([1, 1, 1, 1, 1]) == "COAAE"
-        assert solver_cares.pick_word() in ["SORES", "CARES", "SAREE"]
-
-
 class TestValidateWord:
     def test_validate_initial(self, solver_cares):
         assert solver_cares.validate_word("CARES")

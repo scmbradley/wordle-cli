@@ -20,7 +20,7 @@ T E L L S
 X X X X X
 ```
 The best way to change options is to edit `play_wordle.py` directly.
-There are four word lists included.
+There are five word lists included.
 
  - `shakespeare.txt`: extracted from the 
    [Complete Works of Shakespeare](https://www.gutenberg.org/files/100/100-0.txt).
@@ -30,19 +30,19 @@ There are four word lists included.
    [Winnie the Pooh](https://www.gutenberg.org/cache/epub/67098/pg67098.txt).
    This is all 2400 ish words used in that book.
 
+ - `wiki.txt`: extracted using the `WordList.wiki_corpus` method.
+   This is a list of words that appear in 1000 random wikipedia articles.
+   This could contain some proper names, or some foreign words,
+   it depends on which articles it retrieves.
+   
+ - `multi.txt`: the top 15,000 words of the above three lists combined.
+   This is probably the most sensible list to use.
+   It contains about 2100 five letter words.
+
  - `wordlist.txt`: a truly mammoth 
    [word list](https://github.com/dwyl/english-words).
    There are 370,000 words listed here. 
    Although there appear to be some typos in there.
-   
- - `wiki.txt`: extracted using the `WordList.wiki_corpus` method.
-   This is a list of five letter words that appear in 500 random wikipedia articles.
-   It contains some non-words and non-english words,
-   so this method needs refining.
-
-The first of these is probably the one you want to use. 
-The last one you probably don't want to use unless you're ready for 
-some really obscure words like `OBELI` or `SEQED`.
 
 There is also a
 set of tools for taking any text file and generating
