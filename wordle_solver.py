@@ -75,8 +75,8 @@ class WordleSolver:
                         )
                     )
                     return self.exclusive_words(wl + [word], new_remainder)
-        else:
-            return wl
+
+        return wl
 
     def validate_word(self, word):
         for x in self.letters_in_word:
