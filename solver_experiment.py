@@ -16,9 +16,10 @@ w = Wordle(base_word_list="multi.txt", verbose=False)
 
 s = WordleSolver(wordle=w)
 
-ew = s.exclusive_words()
+ew = s.exclusive_words(no_doubles=False)
+ew += ["MUDDY"]
 
-NUM_SOLVES = 512
+NUM_SOLVES = 8192
 
 print("Exclusive words: " + ",".join(ew))
 
@@ -30,7 +31,7 @@ print_result_stats(baseline)
 
 print("Do two words first:")
 
-two_words = s.multisolver(NUM_SOLVES, firsts=ew[:3])
+two_words = s.multisolver(NUM_SOLVES, firsts=ew[:2])
 
 print_result_stats(two_words)
 

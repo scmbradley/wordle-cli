@@ -63,18 +63,20 @@ class WordleSolver:
             score += self.stat_dict[pos].index(letter)
         return score
 
-    def exclusive_words(self, wl=[], remainder=None, no_doubles=True):
+    def exclusive_words(self, wl=[], remainder=None, permit_doubles=False):
         if remainder is None:
             remainder = self.remaining_words.copy()
         if len(remainder) > 0:
             for word in remainder:
-                if not no_doubles or len(set(word)) == len(word):
+                if permit_doubles or len(set(word)) == len(word):
                     new_remainder = list(
                         filter(
                             lambda x: set(x).intersection(set(word)) == set(), remainder
                         )
                     )
-                    return self.exclusive_words(wl + [word], new_remainder)
+                    return self.exclusive_words(
+                        wl + [word], new_remainder, permit_doubles
+                    )
 
         return wl
 
