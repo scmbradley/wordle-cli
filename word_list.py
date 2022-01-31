@@ -2,11 +2,12 @@ from collections import Counter
 from pathlib import Path
 import re
 import random
+import wikipedia
 
 
 class WordList:
     @staticmethod
-    def generate(filename_in, filename_out, max_words=10_000):
+    def generate(filename_in, filename_out, max_words=10_000, word_length=None):
         word_counter = Counter()
         strip_punctuation = re.compile(r"(\W|_|\d)")
         with Path(filename_in).open() as data:
@@ -17,11 +18,51 @@ class WordList:
                     if not WordList.is_contraction(x)
                 ]
                 word_counter.update([strip_punctuation.sub("", x) for x in words])
-        word_list = [x[0] for x in word_counter.most_common(max_words)]
+        if word_length is None:
+            word_list = [x[0] for x in word_counter.most_common(max_words)]
+        else:
+            n_word_list = [
+                x[0] for x in word_counter.most_common() if len(x[0]) == word_length
+            ]
+            if len(n_word_list) < max_words:
+                word_list = n_word_list
+            else:
+                word_list = n_word_list[:max_words]
         file_out = Path(filename_out)
         file_out.write_text("\n".join(word_list))
         print(f"Wrote out to file {filename_out}")
         return WordList(filename_out)
+
+    @staticmethod
+    def wiki_corpus(
+        filename_raw=None, filename_out="wiki.txt", num_pages=100, **kwargs
+    ):
+        if filename_raw is None:
+            _filename = Path("wiki_tmp.txt")
+        else:
+            _filename = Path(filename_out)
+        wiki_page_list = wikipedia.random(pages=num_pages)
+        wiki_contents = ""
+        pages_done = 0
+        for page in wiki_page_list:
+            try:
+                wiki_contents += wikipedia.page(page, auto_suggest=False).content
+            except wikipedia.DisambiguationError as err:
+                try:
+                    wiki_contents += wikipedia.page(
+                        err.options[0], auto_suggest=False
+                    ).content
+                except:
+                    pages_done -= 1
+                    print("Uncaught error. Sad face.")
+            pages_done += 1
+            if pages_done % 5 == 0:
+                print(f"Pages done: {pages_done}")
+        _filename.write_text(wiki_contents)
+        wl = WordList.generate(_filename, filename_out, **kwargs)
+        if filename_raw is None:
+            _filename.unlink()
+        return wl
 
     def __init__(self, filename, alphabetise=False):
         with open(filename) as data:
