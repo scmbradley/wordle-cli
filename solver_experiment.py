@@ -12,7 +12,7 @@ def print_result_stats(solver_output):
     print(f"Mean: {d.mean:.2}, Variance: {d.variance:.2}, Min/Max: {d.minmax}")
 
 
-### Here we go:
+# Here we go:
 
 w = Wordle(base_word_list="multi.txt", verbose=False)
 
